@@ -212,7 +212,7 @@
     function getZodiacPosition(body, date) {
 
         const vector = Astronomy.GeoVector(body, date, true);
-        const ecliptic = Astronomy.Ecliptic(vector.x, vector.y, vector.z);
+        const ecliptic = Astronomy.Ecliptic(vector);
 
         let degrees = ecliptic.elon;
 
@@ -240,8 +240,8 @@
         const beforeVector = Astronomy.GeoVector(body, before, true);
         const afterVector  = Astronomy.GeoVector(body, after, true);
 
-        const beforeEcl = Astronomy.Ecliptic(beforeVector.x, beforeVector.y, beforeVector.z);
-        const afterEcl  = Astronomy.Ecliptic(afterVector.x, afterVector.y, afterVector.z);
+        const beforeEcl = Astronomy.Ecliptic(beforeVector);
+        const afterEcl  = Astronomy.Ecliptic(afterVector);
 
         let movement = afterEcl.elon - beforeEcl.elon;
 
