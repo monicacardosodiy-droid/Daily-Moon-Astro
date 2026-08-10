@@ -1,6 +1,806 @@
-<div class="ac-widget-coa"
-  geo_pk="17"
-  place="Lisbon, Lisbon, Portugal">
-  <a class="ac-w-mark" href="https://astro-charts.com/" target="_blank" rel="noopener"><span class="ac-w-circle-a">A</span>Astro·Charts</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Current Sky</title>
+
+<!-- Astronomy Engine -->
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine/astronomy.browser.min.js"></script>
+
+<style>
+
+    /* =====================================================
+       GENERAL
+       ===================================================== */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 18px;
+        background: #eee4c9;
+        color: #4d4236;
+        font-family: Georgia, "Times New Roman", serif;
+    }
+
+
+    /* =====================================================
+       MAIN CARD
+       ===================================================== */
+
+    .sky-widget {
+        max-width: 560px;
+        margin: auto;
+
+        background:
+            radial-gradient(
+                circle at center,
+                #f7f0dc 0%,
+                #f1e7cd 70%,
+                #eadcbb 100%
+            );
+
+        border: 1px solid #c7ad7d;
+
+        padding: 9px;
+
+        box-shadow:
+            0 0 0 1px #dfc99d inset;
+    }
+
+
+    .inner {
+        border: 1px solid #c7ad7d;
+        padding: 28px 24px 30px;
+    }
+
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
+
+    .header {
+        text-align: center;
+        margin-bottom: 26px;
+    }
+
+
+    .small-symbol {
+        font-size: 22px;
+        margin-bottom: 10px;
+        color: #9b6d2d;
+    }
+
+
+    .title {
+        font-size: 30px;
+        font-style: italic;
+        margin: 0 0 8px;
+        color: #3f352b;
+        font-weight: normal;
+    }
+
+
+    .date {
+        font-size: 12px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #918272;
+    }
+
+
+    .location {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #a18f78;
+        margin-top: 7px;
+    }
+
+
+    .divider {
+        width: 70px;
+        height: 1px;
+        background: #b99861;
+        margin: 20px auto 22px;
+    }
+
+
+    /* =====================================================
+       PLANET TABLE
+       ===================================================== */
+
+    .planet-list {
+        width: 100%;
+    }
+
+
+    .planet {
+        display: grid;
+
+        grid-template-columns:
+            38px
+            minmax(90px, 1fr)
+            minmax(100px, 1fr)
+            75px;
+
+        align-items: center;
+
+        min-height: 53px;
+
+        border-bottom: 1px solid rgba(151, 126, 88, 0.20);
+    }
+
+
+    .planet:last-child {
+        border-bottom: none;
+    }
+
+
+    /* Planet symbols */
+
+    .planet-symbol {
+        font-size: 22px;
+        color: #51473c;
+    }
+
+
+    /* Planet names */
+
+    .planet-name {
+        font-size: 17px;
+        color: #4a4035;
+    }
+
+
+    /* Zodiac sign */
+
+    .sign {
+        text-align: right;
+
+        font-size: 16px;
+        font-style: italic;
+
+        color: #5b5043;
+
+        padding-right: 8px;
+    }
+
+
+    /* Degree */
+
+    .degree {
+        text-align: right;
+
+        font-size: 15px;
+
+        color: #8d7c67;
+
+        white-space: nowrap;
+    }
+
+
+    .retrograde {
+        color: #b46232;
+        font-weight: bold;
+        font-size: 13px;
+        margin-left: 3px;
+    }
+
+
+    /* =====================================================
+       FOOTER
+       ===================================================== */
+
+    .footer {
+        text-align: center;
+
+        margin-top: 25px;
+
+        font-size: 10px;
+
+        letter-spacing: 2px;
+
+        text-transform: uppercase;
+
+        color: #a3947e;
+    }
+
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 450px) {
+
+        body {
+            padding: 8px;
+        }
+
+        .inner {
+            padding: 22px 14px;
+        }
+
+        .title {
+            font-size: 26px;
+        }
+
+        .planet {
+            grid-template-columns:
+                30px
+                minmax(75px, 1fr)
+                minmax(75px, 1fr)
+                68px;
+        }
+
+        .planet-name {
+            font-size: 15px;
+        }
+
+        .sign {
+            font-size: 14px;
+        }
+
+        .degree {
+            font-size: 13px;
+        }
+
+        .planet-symbol {
+            font-size: 19px;
+        }
+    }
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="sky-widget">
+
+    <div class="inner">
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <div class="header">
+
+            <div class="small-symbol">☉</div>
+
+            <h1 class="title">
+                Current Sky
+            </h1>
+
+            <div id="date" class="date">
+                Loading...
+            </div>
+
+            <div id="location" class="location">
+                Lisbon, Portugal
+            </div>
+
+            <div class="divider"></div>
+
+        </div>
+
+
+        <!-- =================================================
+             PLANETS
+             ================================================= -->
+
+        <div id="planet-list" class="planet-list">
+
+            <!-- JavaScript will insert planets here -->
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <div class="footer">
+            The sky as it is now
+        </div>
+
+
+    </div>
+
 </div>
-<script src="https://astro-charts.com/static/widget-coa.js"></script>
+
+
+
+<script>
+
+    /* =====================================================
+       SETTINGS
+       ===================================================== */
+
+    /*
+       Lisbon coordinates.
+
+       Latitude:
+       38.7223
+
+       Longitude:
+       -9.1393
+    */
+
+    const latitude = 38.7223;
+    const longitude = -9.1393;
+
+    const observer =
+        new Astronomy.Observer(
+            latitude,
+            longitude,
+            0
+        );
+
+
+    /* =====================================================
+       ZODIAC SIGNS
+       ===================================================== */
+
+    const zodiac = [
+
+        {
+            name: "Aries",
+            symbol: "♈"
+        },
+
+        {
+            name: "Taurus",
+            symbol: "♉"
+        },
+
+        {
+            name: "Gemini",
+            symbol: "♊"
+        },
+
+        {
+            name: "Cancer",
+            symbol: "♋"
+        },
+
+        {
+            name: "Leo",
+            symbol: "♌"
+        },
+
+        {
+            name: "Virgo",
+            symbol: "♍"
+        },
+
+        {
+            name: "Libra",
+            symbol: "♎"
+        },
+
+        {
+            name: "Scorpio",
+            symbol: "♏"
+        },
+
+        {
+            name: "Sagittarius",
+            symbol: "♐"
+        },
+
+        {
+            name: "Capricorn",
+            symbol: "♑"
+        },
+
+        {
+            name: "Aquarius",
+            symbol: "♒"
+        },
+
+        {
+            name: "Pisces",
+            symbol: "♓"
+        }
+
+    ];
+
+
+    /* =====================================================
+       PLANETS
+       ===================================================== */
+
+    const planets = [
+
+        {
+            name: "Sun",
+            body: Astronomy.Body.Sun,
+            symbol: "☉"
+        },
+
+        {
+            name: "Moon",
+            body: Astronomy.Body.Moon,
+            symbol: "☽"
+        },
+
+        {
+            name: "Mercury",
+            body: Astronomy.Body.Mercury,
+            symbol: "☿"
+        },
+
+        {
+            name: "Venus",
+            body: Astronomy.Body.Venus,
+            symbol: "♀"
+        },
+
+        {
+            name: "Mars",
+            body: Astronomy.Body.Mars,
+            symbol: "♂"
+        },
+
+        {
+            name: "Jupiter",
+            body: Astronomy.Body.Jupiter,
+            symbol: "♃"
+        },
+
+        {
+            name: "Saturn",
+            body: Astronomy.Body.Saturn,
+            symbol: "♄"
+        },
+
+        {
+            name: "Uranus",
+            body: Astronomy.Body.Uranus,
+            symbol: "♅"
+        },
+
+        {
+            name: "Neptune",
+            body: Astronomy.Body.Neptune,
+            symbol: "♆"
+        },
+
+        {
+            name: "Pluto",
+            body: Astronomy.Body.Pluto,
+            symbol: "♇"
+        }
+
+    ];
+
+
+    /* =====================================================
+       GET ZODIAC POSITION
+       ===================================================== */
+
+    function getZodiacPosition(body, date) {
+
+        /*
+           Ecliptic longitude gives us the position
+           around the zodiac from 0° to 360°.
+        */
+
+        const longitude =
+            Astronomy.GeoVector(
+                body,
+                date,
+                true
+            );
+
+        const ecliptic =
+            Astronomy.Ecliptic(
+                longitude.x,
+                longitude.y,
+                longitude.z
+            );
+
+        let degrees =
+            ecliptic.elon;
+
+
+        /*
+           Convert longitude to zodiac sign.
+        */
+
+        const signIndex =
+            Math.floor(degrees / 30);
+
+
+        /*
+           Degrees inside the sign.
+        */
+
+        const degreeInSign =
+            degrees -
+            (signIndex * 30);
+
+
+        const wholeDegree =
+            Math.floor(degreeInSign);
+
+
+        const minutes =
+            Math.floor(
+                (degreeInSign - wholeDegree) * 60
+            );
+
+
+        return {
+
+            sign:
+                zodiac[signIndex],
+
+            degree:
+                wholeDegree,
+
+            minutes:
+                minutes
+
+        };
+
+    }
+
+
+    /* =====================================================
+       RETROGRADE DETECTION
+       ===================================================== */
+
+    function isRetrograde(body, date) {
+
+        /*
+           Compare the planet's longitude a little before
+           and after the current moment.
+
+           If longitude is moving backwards,
+           the planet is retrograde.
+        */
+
+        const before =
+            new Date(
+                date.getTime() -
+                (60 * 60 * 1000)
+            );
+
+        const after =
+            new Date(
+                date.getTime() +
+                (60 * 60 * 1000)
+            );
+
+
+        const beforeVector =
+            Astronomy.GeoVector(
+                body,
+                before,
+                true
+            );
+
+
+        const afterVector =
+            Astronomy.GeoVector(
+                body,
+                after,
+                true
+            );
+
+
+        const beforeEcl =
+            Astronomy.Ecliptic(
+                beforeVector.x,
+                beforeVector.y,
+                beforeVector.z
+            );
+
+
+        const afterEcl =
+            Astronomy.Ecliptic(
+                afterVector.x,
+                afterVector.y,
+                afterVector.z
+            );
+
+
+        let movement =
+            afterEcl.elon -
+            beforeEcl.elon;
+
+
+        /*
+           Correct for crossing 0° Aries.
+        */
+
+        if (movement > 180) {
+            movement -= 360;
+        }
+
+        if (movement < -180) {
+            movement += 360;
+        }
+
+
+        return movement < 0;
+
+    }
+
+
+    /* =====================================================
+       FORMAT DATE
+       ===================================================== */
+
+    function updateDate() {
+
+        const now = new Date();
+
+
+        const dateText =
+            new Intl.DateTimeFormat(
+                "en-US",
+                {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+
+                    timeZone:
+                        "Europe/Lisbon"
+                }
+            ).format(now);
+
+
+        document
+            .getElementById("date")
+            .textContent =
+            dateText;
+
+
+        document
+            .getElementById("location")
+            .textContent =
+            "Lisbon · Portugal";
+
+    }
+
+
+    /* =====================================================
+       CREATE PLANET ROW
+       ===================================================== */
+
+    function createPlanetRow(
+        planet,
+        date
+    ) {
+
+        const position =
+            getZodiacPosition(
+                planet.body,
+                date
+            );
+
+
+        const retrograde =
+            isRetrograde(
+                planet.body,
+                date
+            );
+
+
+        const row =
+            document.createElement("div");
+
+
+        row.className =
+            "planet";
+
+
+        row.innerHTML = `
+
+            <div class="planet-symbol">
+                ${planet.symbol}
+            </div>
+
+            <div class="planet-name">
+                ${planet.name}
+            </div>
+
+            <div class="sign">
+                ${position.sign.name}
+            </div>
+
+            <div class="degree">
+
+                ${position.degree}°${String(
+                    position.minutes
+                ).padStart(2, "0")}′
+
+                ${
+                    retrograde
+                    ? '<span class="retrograde">R</span>'
+                    : ''
+                }
+
+            </div>
+
+        `;
+
+
+        return row;
+
+    }
+
+
+    /* =====================================================
+       BUILD WIDGET
+       ===================================================== */
+
+    function updateSky() {
+
+        const now =
+            new Date();
+
+
+        updateDate();
+
+
+        const container =
+            document.getElementById(
+                "planet-list"
+            );
+
+
+        container.innerHTML = "";
+
+
+        planets.forEach(
+            planet => {
+
+                const row =
+                    createPlanetRow(
+                        planet,
+                        now
+                    );
+
+
+                container.appendChild(
+                    row
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    updateSky();
+
+
+    /*
+       Update every minute.
+    */
+
+    setInterval(
+        updateSky,
+        60000
+    );
+
+</script>
+
+
+</body>
+</html>
